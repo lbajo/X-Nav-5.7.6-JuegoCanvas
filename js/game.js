@@ -84,6 +84,43 @@ addEventListener("keyup", function (e) {
 
 // Reset the game when the player catches a princess
 
+var save = function () {
+	if (83 in keysDown) { //si pulsas la tecla S se guarda la partida
+		localStorage.setItem("num_monsters",num_monsters);
+		localStorage.setItem("num_stones",num_stones);
+		localStorage.setItem("level", level);
+		localStorage.setItem("princessesCaught", princessesCaught);
+	}
+}
+
+var init = function () {
+	if (78 in keysDown) { //si pulsas la tecla N todo vuelve a su valor inicial
+		num_monsters=2;
+		num_stones=2;
+		level=1;
+		princessesCaught=0;
+		localStorage.setItem("num_monsters",num_monsters);
+		localStorage.setItem("num_stones",num_stones);
+		localStorage.setItem("level", level);
+		localStorage.setItem("princessesCaught", princessesCaught);
+	}
+}
+
+var newgame = function(){
+	if (localStorage.getItem("num_monsters") != null) {
+		num_monsters = localStorage.getItem("num_monsters");
+	}
+	if (localStorage.getItem("num_stones") != null) {
+		num_stones = localStorage.getItem("num_stones");
+	}
+	if (localStorage.getItem("princessesCaught") != null) {
+		princessesCaught = localStorage.getItem("princessesCaught");
+	}
+	if (localStorage.getItem("level") != null) {
+		level = localStorage.getItem("level");
+	}
+}
+
 var reset = function () {
 	hero.x = canvas.width / 2;
 	hero.y = canvas.height / 2;
@@ -132,7 +169,7 @@ var reset = function () {
 			stones[i].x = 32 + (Math.random() * (canvas.width - 100));
 			stones[i].y = 32 + (Math.random() * (canvas.height - 100));
 		}
-	}	
+	}
 };
 
 // Update game objects
@@ -175,7 +212,7 @@ var update = function (modifier) {
 			}
 			monsters[i].x -= monsters[i].speed * modifier;
 		}
-	
+
 	}
 	if (39 in keysDown) { // Player holding right
 		if(hero.x >= canvas.width - 64){
@@ -205,11 +242,12 @@ var update = function (modifier) {
 			level++;
 			num_monsters++;
 			num_stones++;
+			save();
 		}
 		reset();
 	}
 
-	// Are they touching? (Hero-Monster) 
+	// Are they touching? (Hero-Monster)
 	for(i = 0; i < num_stones; i++){
 		if (
 			hero.x <= (monsters[i].x + 16)
@@ -225,7 +263,7 @@ var update = function (modifier) {
 		}
 	}
 
-	// Are they touching? (Hero-Stone) 
+	// Are they touching? (Hero-Stone)
 	for(i = 0; i < num_stones; i++){
 		if (
 			hero.x <= (stones[i].x + 16)
@@ -289,12 +327,16 @@ var main = function () {
 	var delta = now - then;
 
 	update(delta / 1000);
+	save();
+	init();
 	render();
 
 	then = now;
 };
 
 // Let's play this game!
+newgame();
+//init();
 reset();
 var then = Date.now();
 //The setInterval() method will wait a specified number of milliseconds, and then execute a specified function, and it will continue to execute the function, once at every given time-interval.
