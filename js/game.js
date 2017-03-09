@@ -327,16 +327,15 @@ var main = function () {
 	var delta = now - then;
 
 	update(delta / 1000);
-	save();
 	init();
 	render();
+	save();
 
 	then = now;
 };
 
 // Let's play this game!
 newgame();
-//init();
 reset();
 var then = Date.now();
 //The setInterval() method will wait a specified number of milliseconds, and then execute a specified function, and it will continue to execute the function, once at every given time-interval.
